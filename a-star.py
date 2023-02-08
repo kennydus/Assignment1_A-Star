@@ -1,7 +1,6 @@
+import sys
 import math
 import re
-import bisect
-
 
 class CityNode:
     def __init__(self, name):
@@ -10,6 +9,7 @@ class CityNode:
         self.h = math.inf   # Straight line distance to destination city
         self.f = math.inf   # Estimated total cost of path to destination city
         self.previous = None
+
 
 # Make sure the inputs are objects from cityCoordinates list.
 def haversine(city1, city2):
@@ -36,15 +36,13 @@ def readFile(name):
         lines = f.readlines()
 
         for line in lines:
-            # https://stackoverflow.com/questions/3845423/remove-empty-strings-from-a-list-of-strings
-            # https://stackoverflow.com/questions/15879810/python-splitting-a-complex-string-including-parentheses-and
-            # take the input from a txt and split it in a list if it contains "- ( ) \n :"
+            # Takes input from a text file and splits it into a list using "- , \n ( ) :" as delimiters.
             city_info = list(filter(None, re.split('-|,|\n|[(]|[)]|:', line)))
 
             # print(f'{city_destination}')
             cities.append(city_info)
-
     return cities
+
 
 def a_star(dep_city_name, arr_city_name, city_nodes):
     open = []
@@ -92,11 +90,7 @@ def get_path(dest_city_node):
 
     return path
 
-        
-            
 
-
-    
 
 
 
@@ -109,21 +103,16 @@ if __name__ == '__main__':
     for city in coordinates:
         cityCoordinates[city[0]] = [float(city[1]), float(city[2])]
 
-    # Create cityMap, which is a dictionary using the city as a key, and an array of its neighboring cities
-    # with the distance to them as the key's value.
+    # Create cityMap, which is a dictionary using the city as a key, and an array
+    # of its neighboring cities with the distance to them as the key's value.
     cityMap = {}
     mapFile = readFile('map.txt')
     for city in mapFile:
         connectedCities = []
         for i in range(1, len(city), 2):
+            # Each connected city's name and distance
             connectedCities.append([city[i], float(city[i + 1])])
         cityMap[city[0]] = connectedCities
-
-
-    print('\n\nFrom city: ', end='')
-    departure_city = input()
-    print('To city: ', end='')
-    destination_city = input()
 
     # Dictionary of cities as CityNodes
     city_node_dict = {}
@@ -131,14 +120,19 @@ if __name__ == '__main__':
     for city in cityCoordinates:
         city_node_dict[city] = CityNode(city)
 
-    
+    departure_city = sys.argv[1]
+    destination_city = sys.argv[2]
+    print('From city: ', departure_city)
+    print('To city: ', destination_city)
+
     a_star(departure_city, destination_city, city_node_dict)
 
     path = get_path(city_node_dict[destination_city])
-    print('Best Route: ')
-    while len(path) > 0:
+    print('Best Route: ', end='')
+    while len(path) > 1:
         print(path.pop(), ' - ', end='')
+    print(path.pop())
 
-    print('Total distance: ', city_node_dict[destination_city].g, ' mi')
+    print('Total distance: ', math.floor(city_node_dict[destination_city].g), ' mi')
 
 
