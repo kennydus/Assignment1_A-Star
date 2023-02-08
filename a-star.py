@@ -119,15 +119,15 @@ if __name__ == '__main__':
 
     departure_city = sys.argv[1]
     destination_city = sys.argv[2]
-    print('From city: ', departure_city)
-    print('To city: ', destination_city)
+    print('From city:', departure_city)
+    print('To city:', destination_city)
 
     a_star(departure_city, destination_city, city_node_dict)
 
     path = get_path(city_node_dict[destination_city])
     print('Best Route: ', end='')
     while len(path) > 1:
-        print(path.pop(), ' - ', end='')
+        print(path.pop(), '- ', end='')
     print(path.pop())
 
-    print('Total distance: ', math.floor(city_node_dict[destination_city].g), ' mi')
+    print('Total distance:', math.floor(city_node_dict[destination_city].g), 'mi')
